@@ -4,8 +4,9 @@ import (
 	"flag"
 	"log"
 	"os"
-	ctp "tblive/src/ctp/base"
 	"time"
+
+	ctp "github.com/cn0512/GoFuture/ctp/base"
 )
 
 var (

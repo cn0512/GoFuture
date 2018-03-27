@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/url"
-	cons "tblive/src/constant"
 	"time"
+
+	cons "github.com/cn0512/GoFuture/constant"
 
 	"github.com/gorilla/websocket"
 )

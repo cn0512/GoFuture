@@ -9,8 +9,9 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	cons "tblive/src/constant"
 	"time"
+
+	cons "github.com/cn0512/GoFuture/constant"
 
 	mq "github.com/cn0512/GoServerFrame/Core/MQ/Redis"
 	"github.com/gorilla/websocket"

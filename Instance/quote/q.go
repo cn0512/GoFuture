@@ -1,9 +1,9 @@
 package main
 
 import (
-	q "tblive/src/ctp/quote"
+	q "github.com/cn0512/GoFuture/ctp/quote"
 
-	cons "tblive/src/constant"
+	cons "github.com/cn0512/GoFuture/constant"
 )
 
 func main() {

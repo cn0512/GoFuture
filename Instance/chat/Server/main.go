@@ -6,7 +6,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	cons "tblive/src/constant"
+	cons "github.com/cn0512/GoFuture/constant"
 )
 
 var clients = make(map[*websocket.Conn]bool) // connected clients

@@ -5,7 +5,7 @@ import (
 	//"flag"
 	"log"
 	//"os"
-	ctp "tblive/src/ctp/base"
+	ctp "github.com/cn0512/GoFuture/ctp/base"
 
 	ps "github.com/aalness/go-redis-pubsub"
 	mq "github.com/cn0512/GoServerFrame/Core/MQ/Redis"
