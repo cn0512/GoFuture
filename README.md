@@ -1,4 +1,7 @@
 # GoFuture
+
+#now it`s can only work on linux/ubuntu
+
 An entertainment based futures strategy trading software
 
 （1）the system maybe show a full trade fLow
