@@ -4,7 +4,7 @@
 
 /* An example of writing a C++ virtual function in Go.  */
 
-%module(directors="1") ctp
+%module(directors="1") GoFuture
 
 %init %{ 
   //printf("Initialization ctp done.\n");

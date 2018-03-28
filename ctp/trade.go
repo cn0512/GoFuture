@@ -6,53 +6,18 @@ import (
 	"os"
 	"time"
 
-	ctp "github.com/cn0512/GoFuture/ctp/base"
+	"github.com/cn0512/GoFuture"
 )
 
-var (
-	broker_id    = flag.String("BrokerID", "9999", "经纪公司编号,SimNow BrokerID统一为：9999")
-	investor_id  = flag.String("InvestorID", "<InvestorID>", "交易用户代码")
-	pass_word    = flag.String("Password", "<Password>", "交易用户密码")
-	market_front = flag.String("MarketFront", "tcp://180.168.146.187:10031", "行情前置,SimNow的测试环境: tcp://180.168.146.187:10031")
-	trade_front  = flag.String("TradeFront", "tcp://180.168.146.187:10030", "交易前置,SimNow的测试环境: tcp://180.168.146.187:10030")
-)
-
-var CTP GoCTPClient
-
-type GoCTPClient struct {
-	BrokerID   string
-	InvestorID string
-	Password   string
-
-	MdFront string
-	MdApi   ctp.CThostFtdcMdApi
-
-	TraderFront string
-	TraderApi   ctp.CThostFtdcTraderApi
-
-	MdRequestID     int
-	TraderRequestID int
-}
-
-func (g *GoCTPClient) GetMdRequestID() int {
-	g.MdRequestID += 1
-	return g.MdRequestID
-}
-
-func (g *GoCTPClient) GetTraderRequestID() int {
-	g.TraderRequestID += 1
-	return g.TraderRequestID
-}
-
-func NewDirectorCThostFtdcTraderSpi(v interface{}) ctp.CThostFtdcTraderSpi {
-	return ctp.NewDirectorCThostFtdcTraderSpi(v)
+func NewDirectorCThostFtdcTraderSpi(v interface{}) GoFuture.CThostFtdcTraderSpi {
+	return GoFuture.NewDirectorCThostFtdcTraderSpi(v)
 }
 
 type GoCThostFtdcTraderSpi struct {
-	Client GoCTPClient
+	Client CtpCfg
 }
 
-func (p *GoCThostFtdcTraderSpi) OnRspError(pRspInfo ctp.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+func (p *GoCThostFtdcTraderSpi) OnRspError(pRspInfo GoFuture.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Println("GoCThostFtdcTraderSpi.OnRspError.")
 	p.IsErrorRspInfo(pRspInfo)
 }
@@ -73,7 +38,7 @@ func (p *GoCThostFtdcTraderSpi) OnFrontConnected() {
 func (p *GoCThostFtdcTraderSpi) ReqUserLogin() {
 	log.Println("GoCThostFtdcTraderSpi.ReqUserLogin.")
 
-	req := ctp.NewCThostFtdcReqUserLoginField()
+	req := GoFuture.NewCThostFtdcReqUserLoginField()
 	req.SetBrokerID(p.Client.BrokerID)
 	req.SetUserID(p.Client.InvestorID)
 	req.SetPassword(p.Client.Password)
@@ -91,7 +56,7 @@ func (p *GoCThostFtdcTraderSpi) IsFlowControl(iResult int) bool {
 	return ((iResult == -2) || (iResult == -3))
 }
 
-func (p *GoCThostFtdcTraderSpi) IsErrorRspInfo(pRspInfo ctp.CThostFtdcRspInfoField) bool {
+func (p *GoCThostFtdcTraderSpi) IsErrorRspInfo(pRspInfo GoFuture.CThostFtdcRspInfoField) bool {
 	// 如果ErrorID != 0, 说明收到了错误的响应
 	bResult := (pRspInfo.GetErrorID() != 0)
 	if bResult {
@@ -100,7 +65,7 @@ func (p *GoCThostFtdcTraderSpi) IsErrorRspInfo(pRspInfo ctp.CThostFtdcRspInfoFie
 	return bResult
 }
 
-func (p *GoCThostFtdcTraderSpi) OnRspUserLogin(pRspUserLogin ctp.CThostFtdcRspUserLoginField, pRspInfo ctp.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+func (p *GoCThostFtdcTraderSpi) OnRspUserLogin(pRspUserLogin GoFuture.CThostFtdcRspUserLoginField, pRspInfo GoFuture.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 
 	log.Println("GoCThostFtdcTraderSpi.OnRspUserLogin.")
 	if bIsLast && !p.IsErrorRspInfo(pRspInfo) {
@@ -125,7 +90,7 @@ func (p *GoCThostFtdcTraderSpi) OnRspUserLogin(pRspUserLogin ctp.CThostFtdcRspUs
 }
 
 func (p *GoCThostFtdcTraderSpi) ReqSettlementInfoConfirm() {
-	req := ctp.NewCThostFtdcSettlementInfoConfirmField()
+	req := GoFuture.NewCThostFtdcSettlementInfoConfirmField()
 
 	req.SetBrokerID(p.Client.BrokerID)
 	req.SetInvestorID(p.Client.InvestorID)
@@ -139,7 +104,7 @@ func (p *GoCThostFtdcTraderSpi) ReqSettlementInfoConfirm() {
 	}
 }
 
-func (p *GoCThostFtdcTraderSpi) OnRspSettlementInfoConfirm(pSettlementInfoConfirm ctp.CThostFtdcSettlementInfoConfirmField, pRspInfo ctp.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+func (p *GoCThostFtdcTraderSpi) OnRspSettlementInfoConfirm(pSettlementInfoConfirm GoFuture.CThostFtdcSettlementInfoConfirmField, pRspInfo GoFuture.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	//cerr << "--->>> " << "OnRspSettlementInfoConfirm" << endl
 	log.Println("GoCThostFtdcTraderSpi.OnRspSettlementInfoConfirm.")
 	if bIsLast && !p.IsErrorRspInfo(pRspInfo) {
@@ -149,7 +114,7 @@ func (p *GoCThostFtdcTraderSpi) OnRspSettlementInfoConfirm(pSettlementInfoConfir
 }
 
 func (p *GoCThostFtdcTraderSpi) ReqQryInstrument() {
-	req := ctp.NewCThostFtdcQryInstrumentField()
+	req := GoFuture.NewCThostFtdcQryInstrumentField()
 
 	var id string = "cu1612"
 	req.SetInstrumentID(id)
@@ -167,7 +132,7 @@ func (p *GoCThostFtdcTraderSpi) ReqQryInstrument() {
 	}
 }
 
-func (p *GoCThostFtdcTraderSpi) OnRspQryInstrument(pInstrument ctp.CThostFtdcInstrumentField, pRspInfo ctp.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+func (p *GoCThostFtdcTraderSpi) OnRspQryInstrument(pInstrument GoFuture.CThostFtdcInstrumentField, pRspInfo GoFuture.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Println("GoCThostFtdcTraderSpi.OnRspQryInstrument: ", pInstrument.GetInstrumentID(), pInstrument.GetExchangeID(),
 		pInstrument.GetInstrumentName(), pInstrument.GetExchangeInstID(), pInstrument.GetProductID(), pInstrument.GetProductClass(),
 		pInstrument.GetDeliveryYear(), pInstrument.GetDeliveryMonth(), pInstrument.GetMaxMarketOrderVolume(), pInstrument.GetMinMarketOrderVolume(),
@@ -182,7 +147,7 @@ func (p *GoCThostFtdcTraderSpi) OnRspQryInstrument(pInstrument ctp.CThostFtdcIns
 }
 
 func (p *GoCThostFtdcTraderSpi) ReqQryTradingAccount() {
-	req := ctp.NewCThostFtdcQryTradingAccountField()
+	req := GoFuture.NewCThostFtdcQryTradingAccountField()
 	req.SetBrokerID(p.Client.BrokerID)
 	req.SetInvestorID(p.Client.InvestorID)
 
@@ -199,7 +164,7 @@ func (p *GoCThostFtdcTraderSpi) ReqQryTradingAccount() {
 	}
 }
 
-func (p *GoCThostFtdcTraderSpi) OnRspQryTradingAccount(pTradingAccount ctp.CThostFtdcTradingAccountField, pRspInfo ctp.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+func (p *GoCThostFtdcTraderSpi) OnRspQryTradingAccount(pTradingAccount GoFuture.CThostFtdcTradingAccountField, pRspInfo GoFuture.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 
 	log.Println("GoCThostFtdcTraderSpi.OnRspQryTradingAccount.")
 
@@ -211,7 +176,7 @@ func (p *GoCThostFtdcTraderSpi) OnRspQryTradingAccount(pTradingAccount ctp.CThos
 
 func (p *GoCThostFtdcTraderSpi) ReqQryInvestorPosition() {
 
-	req := ctp.NewCThostFtdcQryInvestorPositionField()
+	req := GoFuture.NewCThostFtdcQryInvestorPositionField()
 	req.SetBrokerID(p.Client.BrokerID)
 	req.SetInvestorID(p.Client.InvestorID)
 	req.SetInstrumentID("cu1612")
@@ -229,7 +194,7 @@ func (p *GoCThostFtdcTraderSpi) ReqQryInvestorPosition() {
 	}
 }
 
-func (p *GoCThostFtdcTraderSpi) OnRspQryInvestorPosition(pInvestorPosition ctp.CThostFtdcInvestorPositionField, pRspInfo ctp.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+func (p *GoCThostFtdcTraderSpi) OnRspQryInvestorPosition(pInvestorPosition GoFuture.CThostFtdcInvestorPositionField, pRspInfo GoFuture.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Println("GoCThostFtdcTraderSpi.OnRspQryInvestorPosition.")
 
 	if bIsLast && !p.IsErrorRspInfo(pRspInfo) {
@@ -257,22 +222,22 @@ func main() {
 
 	flag.Parse()
 
-	CTP = GoCTPClient{
-		BrokerID:   *broker_id,
-		InvestorID: *investor_id,
-		Password:   *pass_word,
+	CTP = CtpCfg{
+		BrokerID:   Broker_id,
+		InvestorID: Investor_id,
+		Password:   Pass_word,
 
-		MdFront: *market_front,
-		MdApi:   ctp.CThostFtdcMdApiCreateFtdcMdApi(),
+		MdFront: Market_front,
+		MdApi:   GoFuture.CThostFtdcMdApiCreateFtdcMdApi(),
 
-		TraderFront: *trade_front,
-		TraderApi:   ctp.CThostFtdcTraderApiCreateFtdcTraderApi(),
+		TraderFront: Trade_front,
+		TraderApi:   GoFuture.CThostFtdcTraderApiCreateFtdcTraderApi(),
 
 		MdRequestID:     0,
 		TraderRequestID: 0,
 	}
 
-	pTraderSpi := ctp.NewDirectorCThostFtdcTraderSpi(&GoCThostFtdcTraderSpi{Client: CTP})
+	pTraderSpi := GoFuture.NewDirectorCThostFtdcTraderSpi(&GoCThostFtdcTraderSpi{Client: CTP})
 
 	CTP.TraderApi.RegisterSpi(pTraderSpi)                         // 注册事件类
 	CTP.TraderApi.SubscribePublicTopic(0 /*THOST_TERT_RESTART*/)  // 注册公有流

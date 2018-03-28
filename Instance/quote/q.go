@@ -1,7 +1,7 @@
 package main
 
 import (
-	q "github.com/cn0512/GoFuture/ctp/quote"
+	ctp "github.com/cn0512/GoFuture/ctp"
 
 	cons "github.com/cn0512/GoFuture/constant"
 )
@@ -9,5 +9,5 @@ import (
 func main() {
 
 	//CTP Thread
-	q.Start(cons.Topic_Quote_Tick)
+	ctp.Start(cons.Topic_Quote_Tick)
 }
