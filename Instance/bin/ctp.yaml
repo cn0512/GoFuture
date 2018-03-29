@@ -1,0 +1,7 @@
+#ctp quote 服务器
+BrokerID: "9999"
+InvestorID: "025458"
+Password: "123456"
+MdFront: "tcp://180.168.146.187:10011"
+TraderFront: "tcp://180.168.146.187:10001"
+Ins: ["m1805","IF1804"]

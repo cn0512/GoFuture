@@ -1,9 +1,7 @@
 package ctp
 
 import (
-	"flag"
 	"log"
-	"os"
 	"time"
 
 	"github.com/cn0512/GoFuture"
@@ -214,23 +212,22 @@ func init() {
 	log.SetPrefix("CTP: ")
 }
 
-func main() {
-
-	if len(os.Args) < 2 {
-		log.Fatal("usage: ./ctp_trader_example -BrokerID 9999 -InvestorID 000000 -Password 000000 -MarketFront tcp://180.168.146.187:10010 -TradeFront tcp://180.168.146.187:10000")
-	}
-
-	flag.Parse()
+func StartTrade() {
+	//cfg
+	file := "./ctp.yaml"
+	cfg := &YamlCfg{}
+	Parse(file, cfg)
+	log.Println(cfg)
 
 	CTP = CtpCfg{
-		BrokerID:   Broker_id,
-		InvestorID: Investor_id,
-		Password:   Pass_word,
+		BrokerID:   cfg.BrokerID,
+		InvestorID: cfg.InvestorID,
+		Password:   cfg.Password,
 
-		MdFront: Market_front,
+		MdFront: cfg.MdFront,
 		MdApi:   GoFuture.CThostFtdcMdApiCreateFtdcMdApi(),
 
-		TraderFront: Trade_front,
+		TraderFront: cfg.TraderFront,
 		TraderApi:   GoFuture.CThostFtdcTraderApiCreateFtdcTraderApi(),
 
 		MdRequestID:     0,

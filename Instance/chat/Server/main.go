@@ -30,7 +30,7 @@ func main() {
 
 	// web server init
 	// Create a simple file server
-	fs := http.FileServer(http.Dir("../public"))
+	fs := http.FileServer(http.Dir("./public"))
 	http.Handle("/", fs)
 
 	// Configure websocket route
@@ -40,8 +40,12 @@ func main() {
 	go handleMessages()
 
 	// Start the server on localhost port 8000 and log any errors
-	log.Println("http server started on ", cons.ChatSvrAddr)
-	err := http.ListenAndServe(cons.ChatSvrAddr, nil)
+	file := "./chatserver.yaml"
+	cfg := &ServerCfg{}
+	Parse(file, cfg)
+	log.Println("http server started on ", cons.ChatSvrAddr, cfg.Addr)
+	err := http.ListenAndServe(cfg.Addr, nil)
+
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}

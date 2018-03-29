@@ -1,0 +1,4 @@
+./bin/quote.exe &
+./bin/influx.exe &
+./bin/chat.exe &
+./bin/robot.exe &

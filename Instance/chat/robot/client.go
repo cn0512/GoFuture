@@ -26,7 +26,12 @@ const (
 )
 
 func Connect() *websocket.Conn {
-	u := url.URL{Scheme: "ws", Host: cons.ChatSvrAddr, Path: "/ws"}
+
+	file := "./chatserver.yaml"
+	cfg := &ServerCfg{}
+	Parse(file, cfg)
+
+	u := url.URL{Scheme: "ws", Host: cfg.Addr, Path: "/ws"}
 	log.Printf("connecting to %s", u.String())
 
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)

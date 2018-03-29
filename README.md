@@ -6,11 +6,11 @@ An entertainment based futures strategy trading software
 
 （1）the system maybe show a full trade fLow
 
-    	1, Accoun Reg
-		2, Account Use Strategy Trade
-		3, Muliti Account Revenue rankings
-		4, Muliti Account Online Chat
-		5, Web Crawler Share More Info 
+   	1, Accoun Reg
+	2, Account Use Strategy Trade
+	3, Muliti Account Revenue rankings
+	4, Muliti Account Online Chat
+	5, Web Crawler Share More Info 
 
 （2）基于golang，可能涉及的领域
 

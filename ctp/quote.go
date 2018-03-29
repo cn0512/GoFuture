@@ -126,24 +126,25 @@ func (p *GoCThostFtdcMdSpi) OnRspUnSubForQuoteRsp(pSpecificInstrument GoFuture.C
 }
 
 func (p *GoCThostFtdcMdSpi) OnRtnDepthMarketData(pDepthMarketData GoFuture.CThostFtdcDepthMarketDataField) {
-
-	log.Println("GoCThostFtdcMdSpi.OnRtnDepthMarketData: ", pDepthMarketData.GetTradingDay(),
-		pDepthMarketData.GetInstrumentID(),
-		pDepthMarketData.GetExchangeID(),
-		pDepthMarketData.GetExchangeInstID(),
-		pDepthMarketData.GetLastPrice(),
-		pDepthMarketData.GetPreSettlementPrice(),
-		pDepthMarketData.GetPreClosePrice(),
-		pDepthMarketData.GetPreOpenInterest(),
-		pDepthMarketData.GetOpenPrice(),
-		pDepthMarketData.GetHighestPrice(),
-		pDepthMarketData.GetLowestPrice(),
-		pDepthMarketData.GetVolume(),
-		pDepthMarketData.GetTurnover(),
-		pDepthMarketData.GetOpenInterest())
-
+	/*
+		log.Println("GoCThostFtdcMdSpi.OnRtnDepthMarketData: ", pDepthMarketData.GetTradingDay(),
+			pDepthMarketData.GetInstrumentID(),
+			pDepthMarketData.GetExchangeID(),
+			pDepthMarketData.GetExchangeInstID(),
+			pDepthMarketData.GetLastPrice(),
+			pDepthMarketData.GetPreSettlementPrice(),
+			pDepthMarketData.GetPreClosePrice(),
+			pDepthMarketData.GetPreOpenInterest(),
+			pDepthMarketData.GetOpenPrice(),
+			pDepthMarketData.GetHighestPrice(),
+			pDepthMarketData.GetLowestPrice(),
+			pDepthMarketData.GetVolume(),
+			pDepthMarketData.GetTurnover(),
+			pDepthMarketData.GetOpenInterest())
+	*/
 	//log.Printf("GoCThostFtdcMdSpi.OnRtnDepthMarketData: %+v\n", &pDepthMarketData)
-	buf, _ := json.Marshal(pDepthMarketData)
+	buf, _ := json.Marshal(&pDepthMarketData)
+	//log.Println(string(buf))
 	pub.Publish(topic, buf)
 }
 
@@ -158,6 +159,11 @@ func init() {
 
 func Start(tp string) {
 
+	//cfg
+	file := "./ctp.yaml"
+	cfg := &YamlCfg{}
+	Parse(file, cfg)
+	log.Println(cfg)
 	//[1]MQ
 	pub = mq.NewPub()
 	defer pub.Shutdown()
@@ -166,14 +172,14 @@ func Start(tp string) {
 
 	//[2]
 	CTP = CtpCfg{
-		BrokerID:   Broker_id,
-		InvestorID: Investor_id,
-		Password:   Pass_word,
+		BrokerID:   cfg.BrokerID,
+		InvestorID: cfg.InvestorID,
+		Password:   cfg.Password,
 
-		MdFront: Market_front,
+		MdFront: cfg.MdFront,
 		MdApi:   GoFuture.CThostFtdcMdApiCreateFtdcMdApi(),
 
-		TraderFront: Trade_front,
+		TraderFront: cfg.TraderFront,
 		TraderApi:   GoFuture.CThostFtdcTraderApiCreateFtdcTraderApi(),
 
 		MdRequestID:     0,
