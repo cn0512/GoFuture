@@ -4,10 +4,10 @@ build:
 	go install -v -x -a -buildmode=shared -linkshared #构建GO动态库
 quoteserver:
 	go build -linkshared -o ./bin/quote.exe ./quote/q.go
-trade:
+tradeserver:
 	go build -linkshared -o ./bin/trade.exe ./trade/trade.go
-influx:
-	go build -o ./bin/influx.exe ./influxdb/influx.go
+influxserver:
+	go build -o ./bin/influx.exe ./influxdb/*.go
 chatserver:
 	go build -o ./bin/chat.exe ./chat/Server/*.go
 robot:

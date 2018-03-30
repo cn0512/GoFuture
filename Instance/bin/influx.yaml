@@ -1,0 +1,2 @@
+#influx server cfg 服务器
+addr: "http://localhost:8086"
